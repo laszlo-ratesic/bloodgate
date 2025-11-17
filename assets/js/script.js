@@ -35,9 +35,6 @@ const playerAvatar = document.getElementById("player-avatar");
 
 const powerCounter = document.getElementById("power-counter");
 
-// const enemyDeck = document.querySelector("#enemy-deck");
-// const playerDeck = document.querySelector("#player-deck");
-
 const enemyHand = document.getElementById("enemy-hand");
 const playerHand = document.getElementById("player-hand");
 
@@ -203,21 +200,147 @@ function removeTarget(cardEl) {
   cardEl.removeEventListener("click", attackTarget);
 }
 
-function reloadPage() {
-  location.reload(true);
+function resetGame() {
+  // Reset game state
+  turnCounter = 0;
+  player.power = 0;
+  player.health = 30;
+  player.hand = [];
+  enemy.power = 0;
+  enemy.health = 30;
+  enemy.hand = [];
+  discardPile = [];
+
+  // Clear fields
+  while (playerField.firstChild) {
+    playerField.removeChild(playerField.firstChild);
+  }
+  while (enemyField.firstChild) {
+    enemyField.removeChild(enemyField.firstChild);
+  }
+  while (playerHand.firstChild) {
+    playerHand.removeChild(playerHand.firstChild);
+  }
+  while (enemyHand.firstChild) {
+    enemyHand.removeChild(enemyHand.firstChild);
+  }
+
+  // Recreate initial cards
+  const cardContainer = document.createElement("div");
+  for (let i = 1; i <= 4; i++) {
+    const card = document.createElement("div");
+    card.id = `player-card-${i}`;
+    card.classList.add("player-card", "is-size-1", "has-text-black");
+    const img = document.createElement("img");
+    card.appendChild(img);
+    playerHand.appendChild(card);
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const card = document.createElement("div");
+    card.id = `enemy-card-${i}`;
+    card.classList.add("enemy-card");
+    enemyHand.appendChild(card);
+  }
+
+  // Hide game over, show game view
+  youWon.classList.add("is-hidden");
+  youLost.classList.add("is-hidden");
+  gameOver.classList.add("is-hidden");
+  feltView.classList.remove("is-hidden");
+  heroEl.style.backgroundImage = "url(./assets/images/red-felt.jpeg)";
+
+  // Reload deck and restart game
+  getDeck(player, bloodgateUser.startingDeck);
+  getDeck(enemy, "bloodfury-dominion");
+
+  // Restart game after brief delay to let decks load
+  setTimeout(() => {
+    // Re-assign card elements since we recreated them
+    const newPlayerCard1 = document.getElementById("player-card-1");
+    const newPlayerCard2 = document.getElementById("player-card-2");
+    const newPlayerCard3 = document.getElementById("player-card-3");
+    const newPlayerCard4 = document.getElementById("player-card-4");
+    const newEnemyCard1 = document.getElementById("enemy-card-1");
+    const newEnemyCard2 = document.getElementById("enemy-card-2");
+    const newEnemyCard3 = document.getElementById("enemy-card-3");
+
+    turnCounter++;
+    player.power++;
+    enemy.power++;
+    powerCounter.textContent = player.power;
+
+    playerHealth.value = player.health;
+    playerPower.max = player.power * 100;
+    playerPower.value = player.power * 100;
+
+    newPlayerCard1.addEventListener("click", playCard);
+    setCardProps(newPlayerCard1, player.deck);
+    newPlayerCard1.children[0].src = newPlayerCard1.dataset.img;
+    createStats(newPlayerCard1);
+    player.hand.push(newPlayerCard1);
+
+    newPlayerCard2.addEventListener("click", playCard);
+    setCardProps(newPlayerCard2, player.deck);
+    newPlayerCard2.children[0].src = newPlayerCard2.dataset.img;
+    createStats(newPlayerCard2);
+    player.hand.push(newPlayerCard2);
+
+    newPlayerCard3.addEventListener("click", playCard);
+    setCardProps(newPlayerCard3, player.deck);
+    newPlayerCard3.children[0].src = newPlayerCard3.dataset.img;
+    createStats(newPlayerCard3);
+    player.hand.push(newPlayerCard3);
+
+    newPlayerCard4.addEventListener("click", playCard);
+    setCardProps(newPlayerCard4, player.deck);
+    newPlayerCard4.children[0].src = newPlayerCard4.dataset.img;
+    createStats(newPlayerCard4);
+    player.hand.push(newPlayerCard4);
+
+    setCardProps(newEnemyCard1, enemy.deck);
+    enemy.hand.push(newEnemyCard1);
+    setCardProps(newEnemyCard2, enemy.deck);
+    enemy.hand.push(newEnemyCard2);
+    setCardProps(newEnemyCard3, enemy.deck);
+    enemy.hand.push(newEnemyCard3);
+
+    enemyHealth.value = enemy.health;
+    enemyPower.max = enemy.power * 100;
+    enemyPower.value = enemy.power * 100;
+
+    endTurnBtn.addEventListener("click", endPlayerTurn);
+    endTurnBtn.addEventListener("mousedown", buttonPressed);
+    endTurnBtn.addEventListener("mouseup", buttonReleased);
+  }, 500);
 }
 
 function endGame() {
+  // Save game stats to localStorage
+  const stats = JSON.parse(localStorage.getItem("bloodgateStats")) || {
+    wins: 0,
+    losses: 0,
+    gamesPlayed: 0
+  };
+
+  stats.gamesPlayed++;
+
   feltView.classList.add("is-hidden");
   gameOver.classList.remove("is-hidden");
   if (enemy.health <= 0) {
+    stats.wins++;
     youWon.classList.remove("is-hidden");
     heroEl.style.backgroundImage = "url(./assets/images/victory.jpg)";
   } else {
+    stats.losses++;
     youLost.classList.remove("is-hidden");
     heroEl.style.backgroundImage = "url(./assets/images/defeat.jpg)";
   }
-  restartBtn.addEventListener("click", reloadPage);
+
+  localStorage.setItem("bloodgateStats", JSON.stringify(stats));
+
+  restartBtn.removeEventListener("click", location.reload);
+  restartBtn.addEventListener("click", resetGame);
   return;
 }
 
@@ -247,18 +370,11 @@ function attackTarget(event) {
     );
     tween.play();
     if (enemy.health <= 0) {
-      console.log("Game Over. You Win!");
       endGame();
     }
   }
   // If the player attacks an enemy card
   else if (target.dataset.state === "in-play") {
-    console.log(
-      `Your ${readyToAttack.dataset.name} card attacked the enemy's ${target.dataset.name} card with ${readyToAttack.dataset.atk} atk!`
-    );
-    console.log(
-      `The enemy's ${target.dataset.name} card had ${target.dataset.def} def.`
-    );
     var tween2 = gsap.fromTo(
       target.children[0],
       {
@@ -278,15 +394,10 @@ function attackTarget(event) {
 
     // If the enemy card survives the attack
     if (target.dataset.def > 0) {
-      console.log(
-        `The enemy's ${target.dataset.name} card now has ${target.dataset.def} def left`
-      );
+      // Enemy card survived
     }
     // If the enemy card loses the battle
     else {
-      console.log(
-        `The enemy's ${target.dataset.name} card did not survive the attack`
-      );
       if (player.class === "barbarian") {
         enemy.health -= -target.dataset.def;
         enemyHealth.value = enemy.health;
@@ -294,21 +405,13 @@ function attackTarget(event) {
       discardPile.push(target);
       target.remove();
     }
-    console.log(
-      `Your ${readyToAttack.dataset.name} card had ${readyToAttack.dataset.def} def points`
-    );
     readyToAttack.dataset.def -= target.dataset.atk;
     readyToAttack.children[3].textContent = readyToAttack.dataset.def;
     readyToAttack.children[3].style.color = "red";
 
     if (readyToAttack.dataset.def > 0) {
-      console.log(
-        `Your ${readyToAttack.dataset.name} card now has ${readyToAttack.dataset.def} def points`
-      );
+      // Player card survived
     } else {
-      console.log(
-        `Your ${readyToAttack.dataset.name} card did not survive the battle.`
-      );
       discardPile.push(readyToAttack);
       readyToAttack.remove();
     }
@@ -404,7 +507,6 @@ function AtkMsg() {
   attacker.classList.remove("played-card");
   attacker.classList.add("ready-to-attack");
   attacker.dataset.state = "ready-to-attack";
-  console.log("What do you want to attack?");
   enemyAvatar.style.transition = "all 300ms";
   enemyAvatar.style.boxShadow = $goldGlow;
   enemyAvatar.addEventListener("mouseenter", attackTargetHover);
@@ -473,7 +575,6 @@ function startPlayerTurn() {
     );
     player.hand.push(newCard);
   }
-  console.log(displayHand(player.hand));
 
   // Make cards in hand clickable to play
   if (playerCards.length < 4) {
@@ -537,7 +638,6 @@ function endEnemyTurn() {
   powerCounter.textContent = player.power;
   playerPower.max = player.power * 100;
   playerPower.value = player.power * 100;
-  console.log(`You have ${player.power} power.`);
   yourTurnMsg();
   startPlayerTurn();
 }
@@ -568,7 +668,6 @@ function enemyAttack() {
             });
           },
         });
-        console.log(`${enemy.name} attacked ${player.name} directly!`);
         if (player.health <= 0) {
           endGame();
         }
@@ -576,9 +675,6 @@ function enemyAttack() {
       // If enemy attacks player's cards
       else {
         const randomIndex = Math.floor(Math.random() * playerCards.length);
-        console.log(
-          `${enemyCards[i].dataset.name} attacked ${playerCards[randomIndex].dataset.name}!`
-        );
         gsap.to(".hero", {
           duration: 1,
           boxShadow: "inset 0 0 100vmin 0 red",
@@ -602,11 +698,8 @@ function enemyAttack() {
           playerCards[randomIndex].remove();
         }
         if (enemyCards[i].dataset.def > 0) {
-          console.log(
-            `${enemyCards[i].dataset.name} survived and now has ${enemyCards[i].dataset.def} def`
-          );
+          // Enemy card survived
         } else {
-          console.log(`${enemyCards[i].dataset.name} didn't make it`);
           discardPile.push(enemyCards[i]);
           enemyCards[i].remove();
           i--;
@@ -647,7 +740,6 @@ function enemyPlayCard() {
           enemyDefStat.textContent = card.dataset.def;
           card.appendChild(enemyDefStat);
 
-          console.log(`${enemy.name} played ${card.dataset.name}`);
           const w = window.innerWidth / 4;
           const h = window.innerHeight / 8;
           gsap.from(card, {
@@ -684,7 +776,7 @@ function enemyThinking() {
     }, 200);
   }
   // This needs to wait
-  setTimeout(enemyPlayCard(), 2000);
+  setTimeout(enemyPlayCard, 2000);
   setTimeout(function () {
     clearInterval(thinkingInterval);
     thinkingInterval = null;
@@ -740,15 +832,25 @@ function compliment() {
 
   fetch(apiUrl, {
     method: "GET",
-  }).then(function (response) {
-    if (response.ok) {
-      response.json().then(function (data) {
-        trashTalk = data.compliment;
-      });
-    } else {
-      console.log("error");
-    }
-  });
+  })
+    .then(function (response) {
+      if (response.ok) {
+        return response.json().then(function (data) {
+          trashTalk = data.compliment;
+        });
+      }
+    })
+    .catch(function (error) {
+      // Fallback compliments if API fails
+      const fallbackCompliments = [
+        "You're doing great!",
+        "Impressive strategy!",
+        "Your skills are improving!",
+        "Well played, champion!",
+        "Keep up the good work!"
+      ];
+      trashTalk = fallbackCompliments[Math.floor(Math.random() * fallbackCompliments.length)];
+    });
 }
 
 function endPlayerTurn() {
@@ -773,8 +875,8 @@ function endPlayerTurn() {
   } else {
     compliment();
   }
-  setTimeout(notification(trashTalk), 2000);
-  setTimeout(enemyTurn(), 2000);
+  setTimeout(() => notification(trashTalk), 2000);
+  setTimeout(enemyTurn, 2000);
 }
 
 // This array holds API call commands for foaas API
@@ -819,20 +921,31 @@ async function fuckOff(url) {
   const randomIndex = Math.floor(Math.random() * insult.length);
   const result = url + insult[randomIndex] + "/" + from;
 
-  const response = await fetch(result, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  }).then(function (response) {
+  try {
+    const response = await fetch(result, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    });
     if (response.ok) {
-      response.json().then(function (data) {
-        trashTalk = data.message;
-      });
+      const data = await response.json();
+      trashTalk = data.message;
     } else {
-      console.log("error");
+      // Fallback trash talk if API fails
+      const fallbackTrashTalk = [
+        "You're going down!",
+        "Is that the best you can do?",
+        "Prepare to be defeated!",
+        "Your deck is no match for mine!",
+        "Victory will be mine!"
+      ];
+      trashTalk = fallbackTrashTalk[Math.floor(Math.random() * fallbackTrashTalk.length)];
     }
-  });
+  } catch (error) {
+    // Fallback trash talk on network error
+    trashTalk = "You cannot defeat me!";
+  }
 }
 
 function playCard(event) {
@@ -930,8 +1043,6 @@ function displayFelt() {
   playerPower.max = player.power * 100;
   playerPower.value = player.power * 100;
 
-  console.log(player.deck);
-
   playerCard1.addEventListener("click", playCard);
   setCardProps(playerCard1, player.deck);
   playerCard1.children[0].src = playerCard1.dataset.img;
@@ -956,8 +1067,6 @@ function displayFelt() {
   createStats(playerCard4);
   player.hand.push(playerCard4);
 
-  console.log(`You have ${displayHand(player.hand)}`);
-
   setCardProps(enemyCard1, enemy.deck);
   enemy.hand.push(enemyCard1);
   setCardProps(enemyCard2, enemy.deck);
@@ -969,7 +1078,6 @@ function displayFelt() {
   enemyPower.max = enemy.power * 100;
   enemyPower.value = enemy.power * 100;
 
-  console.log(`You are battling ${enemy.name}`);
   endTurnBtn.addEventListener("click", endPlayerTurn);
   endTurnBtn.addEventListener("mousedown", buttonPressed);
   endTurnBtn.addEventListener("mouseup", buttonReleased);
@@ -978,7 +1086,6 @@ function displayFelt() {
 function loadScreen() {
   navBarBrand.classList.add("is-hidden");
   navBarMenu.classList.add("is-hidden");
-  console.log(`Welcome ${player.name}!`);
   heroBody.style.width = "75%";
   heroBody.classList.add(
     "is-align-self-center",
@@ -1005,9 +1112,17 @@ function loadScreen() {
  */
 function startGame(event) {
   event.preventDefault();
-  console.log(player);
   player.name = nameInput.value.trim();
   player.class = classSelect.value;
+
+  // Save game settings to localStorage
+  const gameSettings = {
+    playerName: player.name,
+    playerClass: player.class,
+    difficulty: settings.difficulty,
+    profanity: settings.profanity
+  };
+  localStorage.setItem("bloodgateSettings", JSON.stringify(gameSettings));
   if (player.class === "barbarian") {
     playerAvatar.style.backgroundImage =
       "url(./assets/images/aliks_the_barbarian_by_lucy_lisett_da3v8lm-fullview.jpeg)";
@@ -1047,6 +1162,15 @@ function startGame(event) {
 
   settings.profanity = profanityInput.checked;
 
+  // Save settings to localStorage
+  const gameSettings = {
+    playerName: player.name,
+    playerClass: player.class,
+    difficulty: settings.difficulty,
+    profanity: settings.profanity
+  };
+  localStorage.setItem("bloodgateSettings", JSON.stringify(gameSettings));
+
   heroEl.style.backgroundImage = "url(./assets/images/hero2.jpg)";
   heroEl.style.backgroundSize = "cover";
   heroEl.style.backgroundPosition = "top";
@@ -1060,14 +1184,7 @@ function startGame(event) {
   loadScreen();
 }
 
-let user = {
-  username: "",
-  experience: "",
-  startingDeck: "",
-};
-
 function createAccount(event) {
-  // event.preventDefault();
   bloodgateUser.username = usernameInput.value.trim();
   bloodgateUser.experience = experienceLevel.value;
   for (let i = 0; i < experienceLevel.length; i++) {
@@ -1079,7 +1196,6 @@ function createAccount(event) {
   localStorage.setItem("bloodgateUser", JSON.stringify(bloodgateUser));
   newGameBtn.dataset.target = "new-game-modal";
   accountEl.children[0].textContent = `Welcome ${bloodgateUser.username}`;
-  // Welcome, username!;
 }
 
 function getDeck(user, deck) {
@@ -1087,26 +1203,77 @@ function getDeck(user, deck) {
     "https://getpantry.cloud/apiv1/pantry/e7259b55-e424-4352-b9d4-af473fc7431a/basket/" +
     deck;
 
-  fetch(apiUrl, {
+  return fetch(apiUrl, {
     method: "GET",
     headers: {
       accept: "application/json",
     },
-  }).then(function (response) {
-    if (response.ok) {
-      response.json().then(function (data) {
-        user.deck = data.cards;
-      });
-    } else {
-      console.log("error");
-    }
-  });
+  })
+    .then(function (response) {
+      if (response.ok) {
+        return response.json().then(function (data) {
+          user.deck = data.cards;
+          return data.cards;
+        });
+      } else {
+        throw new Error(`Failed to load deck: ${deck}`);
+      }
+    })
+    .catch(function (error) {
+      // Fallback: Load deck from local JSON file if API fails
+      return fetch(`./assets/json/${deck}.json`)
+        .then(res => res.json())
+        .then(data => {
+          user.deck = data.cards;
+          return data.cards;
+        })
+        .catch(err => {
+          notification("Error loading deck. Please refresh the page.");
+          return [];
+        });
+    });
 }
+
+// Function to update leaderboard stats display
+function updateLeaderboardStats() {
+  const stats = JSON.parse(localStorage.getItem("bloodgateStats")) || {
+    wins: 0,
+    losses: 0,
+    gamesPlayed: 0
+  };
+
+  document.getElementById("stat-games-played").textContent = stats.gamesPlayed;
+  document.getElementById("stat-wins").textContent = stats.wins;
+  document.getElementById("stat-losses").textContent = stats.losses;
+
+  const winRate = stats.gamesPlayed > 0 ? Math.round((stats.wins / stats.gamesPlayed) * 100) : 0;
+  document.getElementById("stat-win-rate").textContent = winRate + "%";
+
+  // Determine champion title based on wins
+  let title = "Novice";
+  if (stats.wins >= 50) title = "Legendary Champion";
+  else if (stats.wins >= 30) title = "Master Warrior";
+  else if (stats.wins >= 20) title = "Elite Fighter";
+  else if (stats.wins >= 10) title = "Seasoned Veteran";
+  else if (stats.wins >= 5) title = "Skilled Combatant";
+  else if (stats.wins >= 1) title = "Apprentice";
+
+  document.getElementById("stat-title").textContent = title;
+}
+
+// Add event listener to update stats when leaderboard modal opens
+document.addEventListener("DOMContentLoaded", () => {
+  const leaderboardTrigger = document.querySelector('[data-target="leaderboard-modal"]');
+  if (leaderboardTrigger) {
+    leaderboardTrigger.addEventListener("click", updateLeaderboardStats);
+  }
+});
 
 accountForm.addEventListener("submit", createAccount);
 newGameForm.addEventListener("submit", startGame);
 deleteAccountBtn.addEventListener("click", function () {
   localStorage.removeItem("bloodgateUser");
+  localStorage.removeItem("bloodgateStats");
   location.reload(true);
 });
 
@@ -1116,6 +1283,14 @@ if (!localStorageData) {
   accountEl.dataset.target = "settings-modal";
   accountEl.children[0].textContent = `Welcome ${localStorageData.username}!`;
   getDeck(player, localStorageData.startingDeck);
+
+  // Load saved game settings if they exist
+  const savedSettings = JSON.parse(localStorage.getItem("bloodgateSettings"));
+  if (savedSettings) {
+    // Restore previous difficulty and profanity settings
+    settings.difficulty = savedSettings.difficulty || "easy";
+    settings.profanity = savedSettings.profanity || false;
+  }
 }
 
 // BULMA CODE
@@ -1198,7 +1373,6 @@ document.addEventListener("DOMContentLoaded", () => {
   the DOM. */
   (document.querySelectorAll(".notification .delete") || []).forEach(
     ($delete) => {
-      git;
       const $notification = $delete.parentNode;
 
       $delete.addEventListener("click", () => {

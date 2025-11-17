@@ -11,8 +11,8 @@
     {
       "name": "Elder Wizard",
       "cost": 3,
-      "atk": 9,
-      "def": 7,
+      "atk": 4,
+      "def": 4,
       "img": "./assets/images/CardPngs/ElderWizard.png"
     },
     {

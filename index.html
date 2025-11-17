@@ -28,7 +28,7 @@
           <div class="container is-fluid">
             <div class="navbar-brand">
               <a id="account-el" class="navbar-item is-size-1 is-size-5-mobile js-modal-trigger" data-target="create-account-modal">
-                <h1">Create Account</h1>
+                <h1>Create Account</h1>
               </a>
               <span class="navbar-burger" data-target="navbarMenuHeroC">
                 <span></span>
@@ -400,22 +400,50 @@
         </header>
         <section id="rules-background" class="has-text-weight-bold modal-card-body has-text-light has-text-centered">
         <br>
+        <h1 class="is-size-1-desktop has-text-grey-lighter has-text-weight-bold"><span class="has-text-dark">Bloodgate:</span> The Wildwood Deception</h1>
         <br>
-        <h1 class="is-size-1-desktop has-text-grey-lighter has-text-weight-bold"><span class="has-text-dark">Epic</span> Game Name</h1>
-        <br>
-        <br>
-        <h2 class="is-size-2-desktop has-text-grey-lighter has-text-weight-bold"><span class="has-text-dark">Rules</span> of the Game</h2>
+        <h2 class="is-size-2-desktop has-text-grey-lighter has-text-weight-bold"><span class="has-text-dark">Rules</span> of Combat</h2>
         <div class="columns is-centered">
-          <p class="column is-three-fifths has-text-light is-size-4">This is a paragraph describing the rules of the game. We will use this to give a broad overview of what to expect. It is also where we will briefly thank our player for joining us.</p>
+          <p class="column is-three-fifths has-text-light is-size-5">Welcome, warrior! Prepare yourself for strategic card battles against demonic forces. Master your deck, choose your class wisely, and reclaim the Wildwood from darkness!</p>
         </div>
-        <h3 class="is-size-3-desktop">This is a subheading</h3>
-        <ul class="has-text-left">
-          <ol>These</ol>
-          <ol>Are</ol>
-          <ol>Some</ol>
-          <ol>More</ol>
-          <ol>Rules</ol>
-          </ul>
+        <br>
+        <h3 class="is-size-3-desktop has-text-grey-lighter">Game Objective</h3>
+        <div class="columns is-centered">
+          <p class="column is-three-fifths has-text-light is-size-6">Reduce your opponent's health to 0 by playing creatures and attacking strategically. Each player starts with 30 health.</p>
+        </div>
+        <br>
+        <h3 class="is-size-3-desktop has-text-grey-lighter">How to Play</h3>
+        <ul class="has-text-left columns is-centered">
+          <div class="column is-three-fifths">
+            <li class="is-size-6"><strong>Power System:</strong> Each turn, you gain 1 power (maximum = turn number). Mages start with +2 power bonus.</li>
+            <li class="is-size-6"><strong>Drawing Cards:</strong> Draw 1 card at the start of each turn from your deck.</li>
+            <li class="is-size-6"><strong>Playing Cards:</strong> Click cards in your hand to play them. Each card costs power (shown in top-left corner).</li>
+            <li class="is-size-6"><strong>Field Limit:</strong> Maximum 4 cards can be on your field at once.</li>
+            <li class="is-size-6"><strong>Attacking:</strong> Click your creatures to select them, then click enemy creatures or the enemy avatar to attack.</li>
+            <li class="is-size-6"><strong>Card Stats:</strong> Each card has Cost (mana), Attack (damage dealt), and Defense (health).</li>
+            <li class="is-size-6"><strong>Combat:</strong> When creatures battle, they deal their attack damage to each other's defense. Cards with 0 defense are destroyed.</li>
+          </div>
+        </ul>
+        <br>
+        <h3 class="is-size-3-desktop has-text-grey-lighter">Class Abilities</h3>
+        <ul class="has-text-left columns is-centered">
+          <div class="column is-three-fifths">
+            <li class="is-size-6"><strong>Barbarian:</strong> Breakthrough - Excess attack damage carries over to enemy health.</li>
+            <li class="is-size-6"><strong>Mage:</strong> Arcane Power - Start each turn with +2 power.</li>
+            <li class="is-size-6"><strong>Rogue:</strong> Initiative - Your cards can attack immediately when played.</li>
+          </div>
+        </ul>
+        <br>
+        <h3 class="is-size-3-desktop has-text-grey-lighter">Difficulty Levels</h3>
+        <ul class="has-text-left columns is-centered">
+          <div class="column is-three-fifths">
+            <li class="is-size-6"><strong>Easy:</strong> Enemy has normal power progression.</li>
+            <li class="is-size-6"><strong>Medium:</strong> Enemy starts with +2 power each turn.</li>
+            <li class="is-size-6"><strong>Hard:</strong> Enemy starts with +4 power each turn.</li>
+            <li class="is-size-6"><strong>Diabolical:</strong> Enemy starts with +6 power each turn. Good luck!</li>
+          </div>
+        </ul>
+        <br>
         </section>
       </div>
     </div>
@@ -423,7 +451,7 @@
           <div id="cards-modal" class="modal">
             <div class="modal-background"></div>
             <div class="modal-content is-flex">
-              <image class="image">
+              <div class="image">
                 <img src="./assets/images/CardPngs/AngelicWarrior.png" alt="">
                 <img src="./assets/images/CardPngs/Aquatarion.png" alt="">
                 <img src="./assets/images/CardPngs/BullDemon.png" alt="">
@@ -456,7 +484,7 @@
                 <img src="./assets/images/CardPngs/SwampGiant.png" alt="">
                 <img src="./assets/images/CardPngs/TigerDragon.png" alt="">
                 <img src="./assets/images/CardPngs/UndeadDragon.png" alt="">
-              </image>
+              </div>
             </div>
             <button class="modal-close is-large" aria-label="close"></button>
           </div>
@@ -465,8 +493,44 @@
             <div class="modal-background"></div>
             <div class="modal-content">
               <div class="box">
-              <h3>Leaderboard</h3>
-              <p>You are a winner!</p>
+                <h1 class="title is-size-2 has-text-centered">Champion Statistics</h1>
+                <br>
+                <div id="stats-display" class="content">
+                  <table class="table is-fullwidth is-hoverable is-striped">
+                    <thead>
+                      <tr>
+                        <th class="is-size-4">Stat</th>
+                        <th class="is-size-4 has-text-right">Value</th>
+                      </tr>
+                    </thead>
+                    <tbody id="stats-table-body">
+                      <tr>
+                        <td class="is-size-5">Total Games Played</td>
+                        <td id="stat-games-played" class="is-size-5 has-text-right has-text-weight-bold">0</td>
+                      </tr>
+                      <tr>
+                        <td class="is-size-5">Victories</td>
+                        <td id="stat-wins" class="is-size-5 has-text-right has-text-weight-bold has-text-success">0</td>
+                      </tr>
+                      <tr>
+                        <td class="is-size-5">Defeats</td>
+                        <td id="stat-losses" class="is-size-5 has-text-right has-text-weight-bold has-text-danger">0</td>
+                      </tr>
+                      <tr>
+                        <td class="is-size-5">Win Rate</td>
+                        <td id="stat-win-rate" class="is-size-5 has-text-right has-text-weight-bold has-text-info">0%</td>
+                      </tr>
+                      <tr>
+                        <td class="is-size-5">Champion Title</td>
+                        <td id="stat-title" class="is-size-5 has-text-right has-text-weight-bold has-text-warning">Novice</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <br>
+                  <div class="has-text-centered">
+                    <p class="is-size-6 has-text-grey">Continue fighting to earn legendary status!</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -476,8 +540,31 @@
             <div class="modal-content">
               <section id="lore-background" class="modal-card-body">
                 <div class="content modalBox">
-                  <h2 class="title">Lore</h2>
-                <p>Demons took over the world!</p>
+                  <h1 class="title is-size-1 has-text-centered">The Lore of Bloodgate</h1>
+                  <br>
+                  <h2 class="subtitle is-size-3">The Fall of the Wildwood</h2>
+                  <p class="is-size-5">Long ago, the realm of Wildwood flourished under the protection of the Elder Council - powerful mages, noble warriors, and cunning rogues who maintained the ancient Bloodgate, a mystical barrier separating the mortal realm from the Shadowlands.</p>
+                  <br>
+                  <p class="is-size-5">But treachery came from within. The court wizard Malachar, consumed by forbidden knowledge and dark ambition, sought to breach the Bloodgate and claim dominion over the demonic legions beyond. In a night of fire and blood, he shattered the ancient seals, unleashing a horde of nightmares upon the unsuspecting world.</p>
+                  <br>
+                  <h2 class="subtitle is-size-3">The Wildwood Deception</h2>
+                  <p class="is-size-5">The demons came not as mindless beasts, but as cunning strategists. They took the forms of dragons, corrupted nature spirits, and twisted reflections of fallen heroes. They transformed the lush forests into haunted groves, the pristine rivers into rivers of shadow, and the peaceful villages into battlegrounds of eternal conflict.</p>
+                  <br>
+                  <p class="is-size-5">The survivors speak of the Wildwood Deception - the demons' cruel game of hope and despair. They allow champions to rise, gathering followers and building strength, only to crush them at their peak. Each defeat feeds the Bloodgate, strengthening the demonic hold on the realm.</p>
+                  <br>
+                  <h2 class="subtitle is-size-3">The Last Hope</h2>
+                  <p class="is-size-5">Yet prophecy speaks of a true champion - one who can master the ancient arts of the Elder Council, wield creatures both noble and savage, and finally close the Bloodgate forever. The demons grow restless, for they sense this champion approaches.</p>
+                  <br>
+                  <p class="is-size-5 has-text-weight-bold has-text-centered">Could it be you?</p>
+                  <br>
+                  <h2 class="subtitle is-size-3">The Three Paths</h2>
+                  <p class="is-size-5"><strong>The Barbarian's Path:</strong> Channel raw fury and breakthrough strikes. Warriors who walk this path believe that overwhelming force can shatter any demonic defense. Their legendary "Bloodfury Dominion" teaches that when one enemy falls, the momentum continues to the next.</p>
+                  <br>
+                  <p class="is-size-5"><strong>The Mage's Path:</strong> Harness arcane power and summon dragons from the astral plane. Masters of the "Dragon's Wrath" deck command mighty wyrms and ancient wizards, wielding magic that grows stronger with each passing moment.</p>
+                  <br>
+                  <p class="is-size-5"><strong>The Rogue's Path:</strong> Strike swiftly before the enemy can react. The "Legion of the Forest" favors speed over power, teaching that a blade in the shadows is worth a sword in the sun. Their initiative allows attacks that catch demons unprepared.</p>
+                  <br>
+                  <p class="is-size-5 has-text-centered has-text-weight-bold">Choose your path wisely, champion. The fate of Wildwood rests in your hands.</p>
                 </div>
               </section>
             </div>
