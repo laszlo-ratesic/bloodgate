@@ -50,13 +50,25 @@ class BloodgateThreeManager {
     this.canvas = document.getElementById('three-canvas');
 
     if (!this.canvas) {
-      console.error('❌ Three.js canvas not found!');
-      console.error('🔍 DOM ready state:', document.readyState);
-      console.error('🔍 Available elements:', document.querySelectorAll('canvas').length, 'canvas elements found');
-      return false;
-    }
+      console.warn('⚠️ Canvas not found, creating it dynamically...');
 
-    console.log('✅ Canvas found!');
+      // Create canvas element
+      this.canvas = document.createElement('canvas');
+      this.canvas.id = 'three-canvas';
+      this.canvas.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;';
+
+      // Find felt-view and prepend canvas as first child
+      const feltView = document.getElementById('felt-view');
+      if (feltView) {
+        feltView.insertBefore(this.canvas, feltView.firstChild);
+        console.log('✅ Canvas created and added to DOM!');
+      } else {
+        console.error('❌ Could not find felt-view container!');
+        return false;
+      }
+    } else {
+      console.log('✅ Canvas found!');
+    }
 
     try {
       // Create scene
