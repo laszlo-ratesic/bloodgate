@@ -634,6 +634,7 @@ function endEnemyTurn() {
   powerCounter.textContent = player.power;
   playerPower.max = player.power * 100;
   playerPower.value = player.power * 100;
+  showTurnIndicator(true); // Show YOUR TURN indicator
   yourTurnMsg();
   startPlayerTurn();
 }
@@ -780,6 +781,8 @@ function enemyThinking() {
 }
 
 function enemyTurn() {
+  showTurnIndicator(false); // Show ENEMY TURN indicator
+
   if (settings.difficulty === "easy") {
     enemy.power = turnCounter;
   } else if (settings.difficulty === "medium") {
@@ -838,6 +841,18 @@ function compliment() {
     "You're unstoppable!"
   ];
   trashTalk = fallbackCompliments[Math.floor(Math.random() * fallbackCompliments.length)];
+}
+
+// Show epic turn indicator
+function showTurnIndicator(isPlayerTurn) {
+  const indicator = document.createElement('div');
+  indicator.className = `turn-indicator ${isPlayerTurn ? 'player-turn' : 'enemy-turn'}`;
+  indicator.textContent = isPlayerTurn ? 'YOUR TURN' : 'ENEMY TURN';
+  document.body.appendChild(indicator);
+
+  setTimeout(() => {
+    indicator.remove();
+  }, 2000);
 }
 
 function endPlayerTurn() {
@@ -935,6 +950,38 @@ async function fuckOff(url) {
   }
 }
 
+// Create particle burst effect
+function createParticleBurst(element) {
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  for (let i = 0; i < 15; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle particle-magic';
+    particle.style.width = (Math.random() * 8 + 4) + 'px';
+    particle.style.height = particle.style.width;
+    particle.style.left = centerX + 'px';
+    particle.style.top = centerY + 'px';
+
+    document.body.appendChild(particle);
+
+    const angle = (Math.PI * 2 * i) / 15;
+    const velocity = Math.random() * 100 + 50;
+    const vx = Math.cos(angle) * velocity;
+    const vy = Math.sin(angle) * velocity;
+
+    gsap.to(particle, {
+      duration: 1,
+      x: vx,
+      y: vy,
+      opacity: 0,
+      scale: 0,
+      onComplete: () => particle.remove()
+    });
+  }
+}
+
 function playCard(event) {
   const chosenCard = event.currentTarget;
   if (player.power >= chosenCard.dataset.cost) {
@@ -953,6 +1000,12 @@ function playCard(event) {
     chosenCard.removeEventListener("click", playCard);
     const w = window.innerWidth / 4;
     const h = window.innerHeight / 8;
+    // Add card play animation
+    chosenCard.classList.add('card-play-animation');
+    setTimeout(() => {
+      chosenCard.classList.remove('card-play-animation');
+    }, 800);
+
     gsap.from(chosenCard, {
       duration: 2,
       ease: "power4",
@@ -964,6 +1017,9 @@ function playCard(event) {
     player.power -= chosenCard.dataset.cost;
     powerCounter.textContent = player.power;
     playerPower.value = player.power * 100;
+
+    // Create particle burst effect
+    createParticleBurst(chosenCard);
   }
 }
 
@@ -1034,24 +1090,28 @@ function displayFelt() {
   setCardProps(playerCard1, player.deck);
   playerCard1.children[0].src = playerCard1.dataset.img;
   createStats(playerCard1);
+  playerCard1.classList.add('card-hover-effect');
   player.hand.push(playerCard1);
 
   playerCard2.addEventListener("click", playCard);
   setCardProps(playerCard2, player.deck);
   playerCard2.children[0].src = playerCard2.dataset.img;
   createStats(playerCard2);
+  playerCard2.classList.add('card-hover-effect');
   player.hand.push(playerCard2);
 
   playerCard3.addEventListener("click", playCard);
   setCardProps(playerCard3, player.deck);
   playerCard3.children[0].src = playerCard3.dataset.img;
   createStats(playerCard3);
+  playerCard3.classList.add('card-hover-effect');
   player.hand.push(playerCard3);
 
   playerCard4.addEventListener("click", playCard);
   setCardProps(playerCard4, player.deck);
   playerCard4.children[0].src = playerCard4.dataset.img;
   createStats(playerCard4);
+  playerCard4.classList.add('card-hover-effect');
   player.hand.push(playerCard4);
 
   setCardProps(enemyCard1, enemy.deck);
@@ -1073,24 +1133,106 @@ function displayFelt() {
 function loadScreen() {
   navBarBrand.classList.add("is-hidden");
   navBarMenu.classList.add("is-hidden");
-  heroBody.style.width = "75%";
-  heroBody.classList.add(
-    "is-align-self-center",
-    "is-flex",
-    "is-flex-direction-column"
-  );
-  loadingBar.classList.add("progress", "is-large", "is-medium-dark");
-  loadingBar.max = "100";
-  loadingBar.textContent = "60%";
-  loadingBar.style.marginTop = "5rem";
-  heroBody.appendChild(loadingBar);
-  if (settings.profanity) {
-    fuckOff("https://cors-anywhere.herokuapp.com/http://foaas.com/");
-  } else {
-    compliment();
+
+  // Create cinematic loading screen
+  const loadingScreen = document.createElement('div');
+  loadingScreen.className = 'loading-screen';
+
+  // Loading title
+  const loadingTitle = document.createElement('div');
+  loadingTitle.className = 'loading-title';
+  loadingTitle.textContent = 'BLOODGATE';
+
+  // Progress container
+  const progressContainer = document.createElement('div');
+  progressContainer.className = 'loading-progress-container';
+
+  const progressBar = document.createElement('div');
+  progressBar.className = 'loading-progress-bar';
+
+  const progressFill = document.createElement('div');
+  progressFill.className = 'loading-progress-fill';
+  progressFill.style.width = '0%';
+
+  const progressText = document.createElement('div');
+  progressText.className = 'loading-progress-text';
+  progressText.textContent = '0%';
+
+  progressBar.appendChild(progressFill);
+  progressBar.appendChild(progressText);
+  progressContainer.appendChild(progressBar);
+
+  // Loading tips
+  const tips = [
+    'Strategic card placement is the key to victory',
+    'Each class has unique strengths - choose wisely',
+    'Higher difficulty means tougher enemies and better rewards',
+    'Combo attacks can turn the tide of battle',
+    'Manage your power wisely - it increases each turn',
+    'Legendary cards have devastating abilities',
+    'Defense is just as important as offense',
+    'Study your opponent\'s moves carefully'
+  ];
+
+  const tipsContainer = document.createElement('div');
+  tipsContainer.className = 'loading-tips';
+
+  const tipElement = document.createElement('div');
+  tipElement.className = 'loading-tip';
+  tipElement.textContent = tips[Math.floor(Math.random() * tips.length)];
+
+  tipsContainer.appendChild(tipElement);
+
+  // Particles container
+  const particlesContainer = document.createElement('div');
+  particlesContainer.className = 'loading-particles';
+
+  // Create floating particles
+  for (let i = 0; i < 30; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'loading-particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 8 + 's';
+    particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+    particlesContainer.appendChild(particle);
   }
-  heroBody.style.justifyContent = "center";
-  setTimeout(displayFelt, 2000);
+
+  // Assemble loading screen
+  loadingScreen.appendChild(particlesContainer);
+  loadingScreen.appendChild(loadingTitle);
+  loadingScreen.appendChild(progressContainer);
+  loadingScreen.appendChild(tipsContainer);
+
+  heroBody.innerHTML = '';
+  heroBody.appendChild(loadingScreen);
+
+  // Animate progress bar
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    progress += Math.random() * 15;
+    if (progress > 100) progress = 100;
+
+    progressFill.style.width = progress + '%';
+    progressText.textContent = Math.floor(progress) + '%';
+
+    if (progress >= 100) {
+      clearInterval(progressInterval);
+      setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.transition = 'opacity 0.5s ease-out';
+        setTimeout(() => {
+          displayFelt();
+        }, 500);
+      }, 500);
+    }
+  }, 200);
+
+  // Add optional profanity message
+  if (settings.profanity) {
+    setTimeout(() => {
+      tipElement.textContent = 'Get ready to kick some ass!';
+    }, 1500);
+  }
 }
 
 /**
@@ -1859,6 +2001,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   // END OF NAVBURGERS
+
+  // DECK CARD SELECTION HANDLING
+  const deckCards = document.querySelectorAll('.deck-card');
+  const deckSelectInput = document.getElementById('deck-select');
+
+  deckCards.forEach(card => {
+    card.addEventListener('click', () => {
+      // Remove selected class from all cards
+      deckCards.forEach(c => c.classList.remove('selected'));
+      // Add selected class to clicked card
+      card.classList.add('selected');
+      // Update hidden input value
+      deckSelectInput.value = card.dataset.deck;
+    });
+  });
+
+  // CLASS CARD SELECTION HANDLING
+  const classCards = document.querySelectorAll('.class-card');
+  const classSelectInput = document.getElementById('class-select');
+
+  classCards.forEach(card => {
+    card.addEventListener('click', () => {
+      // Remove selected class from all cards
+      classCards.forEach(c => c.classList.remove('selected'));
+      // Add selected class to clicked card
+      card.classList.add('selected');
+      // Update hidden input value
+      classSelectInput.value = card.dataset.class;
+    });
+  });
+
+  // DIFFICULTY OPTION SELECTION HANDLING
+  const difficultyOptions = document.querySelectorAll('.difficulty-option');
+
+  difficultyOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      // Remove selected class from all options
+      difficultyOptions.forEach(o => o.classList.remove('selected'));
+      // Add selected class to clicked option
+      option.classList.add('selected');
+    });
+  });
 
   // Functions to open and close a modal
   function openModal($el) {
