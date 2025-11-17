@@ -1264,6 +1264,575 @@ if (!localStorageData) {
   }
 }
 
+// ===== EPIC GAME ENHANCEMENTS =====
+
+// Particle Effects System
+function createParticles(x, y, count, type = 'magic') {
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle', `particle-${type}`);
+
+    const size = Math.random() * 10 + 5;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+
+    document.body.appendChild(particle);
+
+    const angle = (Math.PI * 2 * i) / count;
+    const velocity = Math.random() * 100 + 50;
+    const vx = Math.cos(angle) * velocity;
+    const vy = Math.sin(angle) * velocity;
+
+    gsap.to(particle, {
+      x: vx,
+      y: vy,
+      opacity: 0,
+      duration: Math.random() * 0.5 + 0.5,
+      ease: 'power2.out',
+      onComplete: () => particle.remove()
+    });
+  }
+}
+
+// Landing Page Particles
+function initLandingParticles() {
+  const particlesBg = document.getElementById('particles-bg');
+  if (!particlesBg) return;
+
+  setInterval(() => {
+    const particle = document.createElement('div');
+    particle.style.position = 'absolute';
+    particle.style.width = `${Math.random() * 3 + 1}px`;
+    particle.style.height = `${Math.random() * 3 + 1}px`;
+    particle.style.background = `rgba(255, 215, 0, ${Math.random() * 0.5 + 0.3})`;
+    particle.style.borderRadius = '50%';
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.pointerEvents = 'none';
+
+    particlesBg.appendChild(particle);
+
+    gsap.to(particle, {
+      y: -100,
+      opacity: 0,
+      duration: Math.random() * 3 + 2,
+      ease: 'power1.out',
+      onComplete: () => particle.remove()
+    });
+  }, 200);
+}
+
+// Initialize landing particles on page load
+if (document.getElementById('particles-bg')) {
+  initLandingParticles();
+}
+
+// Floating Damage Number
+function showDamageNumber(x, y, damage, type = 'damage') {
+  const damageEl = document.createElement('div');
+  damageEl.classList.add('damage-number');
+  if (type === 'critical') damageEl.classList.add('critical');
+  if (type === 'healing') damageEl.classList.add('healing');
+
+  damageEl.textContent = `-${damage}`;
+  if (type === 'healing') damageEl.textContent = `+${damage}`;
+
+  damageEl.style.left = `${x}px`;
+  damageEl.style.top = `${y}px`;
+
+  document.body.appendChild(damageEl);
+
+  setTimeout(() => damageEl.remove(), 1500);
+}
+
+// Screen Shake Effect
+function screenShake(intensity = 'normal') {
+  const hero = document.querySelector('.hero');
+  hero.classList.add('screen-shake');
+  setTimeout(() => hero.classList.remove('screen-shake'), 500);
+}
+
+// Card Rarity System
+const cardRarities = {
+  'Colossal Dragon': 'legendary',
+  'Fire Dragon': 'legendary',
+  'Undead Dragon': 'epic',
+  'Cloud Dragon': 'epic',
+  'Tiger Dragon': 'epic',
+  'Forest Dragon': 'epic',
+  'Dragon Sorcerer': 'epic',
+  'Dragula': 'rare',
+  'Elder Wizard': 'rare',
+  'Empress Of The Deep': 'rare',
+  'Giant King': 'rare',
+  'Demon Priest': 'rare',
+  'Dark Witch': 'rare',
+  'Angelic Warrior': 'rare',
+  'Stone Giant': 'common',
+  'Swamp Giant': 'common',
+  'Elven Archer': 'common',
+  'Shamanic Archer': 'common',
+  'Clawface': 'common',
+  'Bull Demon': 'common'
+};
+
+function applyCardRarity(cardEl) {
+  const cardName = cardEl.dataset.name;
+  const rarity = cardRarities[cardName] || 'common';
+
+  // Remove existing rarity classes
+  cardEl.classList.remove('card-rarity-common', 'card-rarity-rare', 'card-rarity-epic', 'card-rarity-legendary');
+
+  // Add new rarity class
+  cardEl.classList.add(`card-rarity-${rarity}`);
+
+  return rarity;
+}
+
+// Combo System
+let comboCounter = 0;
+let lastCardPlayed = null;
+
+function checkCombo(cardName) {
+  // Define combo patterns
+  const combos = {
+    'Dragon Fury': ['Fire Dragon', 'Dragon Sorcerer'],
+    'Forest Alliance': ['Forest Dragon', 'Lady Of The Forest', 'Elven Archer'],
+    'Dark Pact': ['Demon Priest', 'Dark Witch', 'Bull Demon'],
+    'Giant Rampage': ['Giant King', 'Stone Giant', 'Swamp Giant']
+  };
+
+  // Check if this card forms a combo with recently played cards
+  for (const [comboName, cards] of Object.entries(combos)) {
+    if (cards.includes(cardName)) {
+      comboCounter++;
+      if (comboCounter >= 2) {
+        showCombo(comboName, comboCounter);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function showCombo(comboName, multiplier) {
+  const comboEl = document.createElement('div');
+  comboEl.classList.add('combo-display');
+  comboEl.textContent = `${comboName}! x${multiplier} COMBO!`;
+
+  document.body.appendChild(comboEl);
+
+  setTimeout(() => comboEl.remove(), 2000);
+}
+
+function resetCombo() {
+  comboCounter = 0;
+}
+
+// Achievement System
+const achievements = {
+  firstBlood: { id: 'firstBlood', name: 'First Blood', description: 'Win your first battle', icon: '⚔️', unlocked: false },
+  cardMaster: { id: 'cardMaster', name: 'Card Master', description: 'Play 100 cards', icon: '🃏', unlocked: false },
+  dragonSlayer: { id: 'dragonSlayer', name: 'Dragon Slayer', description: 'Defeat 5 dragon cards', icon: '🐉', unlocked: false },
+  comboKing: { id: 'comboKing', name: 'Combo King', description: 'Execute a 5x combo', icon: '💥', unlocked: false },
+  legendary: { id: 'legendary', name: 'Legendary Champion', description: 'Win 50 games', icon: '👑', unlocked: false }
+};
+
+function loadAchievements() {
+  const saved = JSON.parse(localStorage.getItem('bloodgateAchievements')) || {};
+  Object.keys(achievements).forEach(key => {
+    if (saved[key]) {
+      achievements[key].unlocked = saved[key].unlocked;
+    }
+  });
+}
+
+function saveAchievements() {
+  localStorage.setItem('bloodgateAchievements', JSON.stringify(achievements));
+}
+
+function unlockAchievement(achievementId) {
+  if (achievements[achievementId] && !achievements[achievementId].unlocked) {
+    achievements[achievementId].unlocked = true;
+    saveAchievements();
+    showAchievement(achievements[achievementId]);
+  }
+}
+
+function showAchievement(achievement) {
+  const achievementEl = document.createElement('div');
+  achievementEl.classList.add('achievement-notification');
+  achievementEl.innerHTML = `
+    <div class="achievement-icon">${achievement.icon}</div>
+    <div class="achievement-title">Achievement Unlocked!</div>
+    <div class="achievement-title">${achievement.name}</div>
+    <div class="achievement-description">${achievement.description}</div>
+  `;
+
+  document.body.appendChild(achievementEl);
+
+  setTimeout(() => achievementEl.remove(), 5000);
+}
+
+// Load achievements on page load
+loadAchievements();
+
+// Track stats for achievements
+let cardsPlayedCount = 0;
+let dragonsDefeated = 0;
+
+// Enhanced Attack with Visual Effects
+const originalAttackTarget = attackTarget;
+window.attackTarget = function(event) {
+  const readyToAttack = document.querySelector('.ready-to-attack');
+  if (!readyToAttack) return;
+
+  const target = event.currentTarget;
+  const rect = target.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+
+  // Determine particle type based on card
+  const cardName = readyToAttack.dataset.name;
+  let particleType = 'magic';
+  if (cardName && cardName.includes('Dragon')) particleType = 'fire';
+  if (cardName && (cardName.includes('Demon') || cardName.includes('Blood'))) particleType = 'blood';
+
+  // Create particles
+  createParticles(x, y, 15, particleType);
+
+  // Show damage number
+  const damage = parseInt(readyToAttack.dataset.atk);
+  showDamageNumber(x, y, damage, damage > 5 ? 'critical' : 'damage');
+
+  // Screen shake on big hits
+  if (damage >= 7) {
+    screenShake();
+  }
+
+  // Track dragon defeats
+  if (target.dataset && target.dataset.name && target.dataset.name.includes('Dragon')) {
+    dragonsDefeated++;
+    if (dragonsDefeated >= 5) {
+      unlockAchievement('dragonSlayer');
+    }
+  }
+
+  // Call original function
+  originalAttackTarget.call(this, event);
+};
+
+// Enhanced Play Card with Visual Effects
+const originalPlayCard = playCard;
+window.playCard = function(event) {
+  const chosenCard = event.currentTarget;
+
+  // Apply rarity effects
+  applyCardRarity(chosenCard);
+
+  // Check for combos
+  const cardName = chosenCard.dataset.name;
+  checkCombo(cardName);
+
+  // Track cards played
+  cardsPlayedCount++;
+  if (cardsPlayedCount >= 100) {
+    unlockAchievement('cardMaster');
+  }
+
+  // Create play particles
+  const rect = chosenCard.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  createParticles(x, y, 10, 'magic');
+
+  // Call original function
+  originalPlayCard.call(this, event);
+
+  lastCardPlayed = cardName;
+};
+
+// Enhanced End Game with Achievements
+const originalEndGame = endGame;
+window.endGame = function() {
+  originalEndGame.call(this);
+
+  // Check for first win achievement
+  if (enemy.health <= 0) {
+    const stats = JSON.parse(localStorage.getItem("bloodgateStats")) || { wins: 0 };
+    if (stats.wins === 1) {
+      unlockAchievement('firstBlood');
+    }
+    if (stats.wins >= 50) {
+      unlockAchievement('legendary');
+    }
+  }
+
+  // Reset combo counter
+  resetCombo();
+};
+
+// Override the functions globally
+attackTarget = window.attackTarget;
+playCard = window.playCard;
+endGame = window.endGame;
+
+// ===== ADVANCED CARD ABILITIES SYSTEM =====
+
+const cardAbilities = {
+  'Fire Dragon': {
+    name: 'Inferno Breath',
+    type: 'damage',
+    effect: (card) => {
+      // Deals 2 extra damage to all enemy cards
+      if (enemyCards.length > 0) {
+        for (let i = 0; i < enemyCards.length; i++) {
+          enemyCards[i].dataset.def = parseInt(enemyCards[i].dataset.def) - 2;
+          enemyCards[i].children[3].textContent = enemyCards[i].dataset.def;
+          const rect = enemyCards[i].getBoundingClientRect();
+          showDamageNumber(rect.left + rect.width/2, rect.top + rect.height/2, 2);
+          if (enemyCards[i].dataset.def <= 0) {
+            discardPile.push(enemyCards[i]);
+            enemyCards[i].remove();
+            i--;
+          }
+        }
+        notification('Fire Dragon breathes inferno! All enemies burn!');
+      }
+    }
+  },
+  'Elder Wizard': {
+    name: 'Arcane Mastery',
+    type: 'buff',
+    effect: (card) => {
+      // Grants +2 power to player
+      player.power += 2;
+      powerCounter.textContent = player.power;
+      playerPower.value = player.power * 100;
+      notification('Elder Wizard channels arcane energy! +2 Power!');
+      const rect = card.getBoundingClientRect();
+      showDamageNumber(rect.left + rect.width/2, rect.top, 2, 'healing');
+    }
+  },
+  'Demon Priest': {
+    name: 'Dark Ritual',
+    type: 'drain',
+    effect: (card) => {
+      // Drains 3 health from player, gives to enemy
+      player.health -= 3;
+      playerHealth.value = player.health;
+      enemy.health += 3;
+      if (enemy.health > 30) enemy.health = 30;
+      enemyHealth.value = enemy.health;
+      notification('Demon Priest performs dark ritual!');
+      screenShake();
+    }
+  },
+  'Angelic Warrior': {
+    name: 'Divine Shield',
+    type: 'buff',
+    effect: (card) => {
+      // Heals player for 4 health
+      player.health += 4;
+      if (player.health > 30) player.health = 30;
+      playerHealth.value = player.health;
+      const rect = playerAvatar.getBoundingClientRect();
+      showDamageNumber(rect.left + rect.width/2, rect.top + rect.height/2, 4, 'healing');
+      notification('Angelic Warrior grants divine protection! +4 Health!');
+    }
+  },
+  'Empress Of The Deep': {
+    name: 'Tidal Wave',
+    type: 'control',
+    effect: (card) => {
+      // Returns one random enemy card to their hand
+      if (enemyCards.length > 0) {
+        const randomIndex = Math.floor(Math.random() * enemyCards.length);
+        const targetCard = enemyCards[randomIndex];
+        gsap.to(targetCard, {
+          duration: 1,
+          y: -200,
+          opacity: 0,
+          onComplete: () => {
+            targetCard.remove();
+            notification('Empress summons a tidal wave! Enemy card returned!');
+          }
+        });
+      }
+    }
+  },
+  'Dark Witch': {
+    name: 'Curse',
+    type: 'debuff',
+    effect: (card) => {
+      // Weakens all player cards by 1 defense
+      if (playerCards.length > 0) {
+        for (let i = 0; i < playerCards.length; i++) {
+          playerCards[i].dataset.def = parseInt(playerCards[i].dataset.def) - 1;
+          playerCards[i].children[3].textContent = playerCards[i].dataset.def;
+          playerCards[i].children[3].style.color = 'purple';
+          if (playerCards[i].dataset.def <= 0) {
+            discardPile.push(playerCards[i]);
+            playerCards[i].remove();
+            i--;
+          }
+        }
+        notification('Dark Witch curses your forces!');
+      }
+    }
+  },
+  'Colossal Dragon': {
+    name: 'Earthquake',
+    type: 'damage',
+    effect: (card) => {
+      // Massive screen shake and 1 damage to all cards on field
+      screenShake();
+      const allCards = [...playerCards, ...enemyCards];
+      allCards.forEach(c => {
+        c.dataset.def = parseInt(c.dataset.def) - 1;
+        c.children[3].textContent = c.dataset.def;
+        const rect = c.getBoundingClientRect();
+        showDamageNumber(rect.left + rect.width/2, rect.top + rect.height/2, 1);
+        if (c.dataset.def <= 0) {
+          discardPile.push(c);
+          c.remove();
+        }
+      });
+      notification('Colossal Dragon causes an EARTHQUAKE!');
+    }
+  },
+  'Enchantress': {
+    name: 'Enchantment',
+    type: 'buff',
+    effect: (card) => {
+      // Boosts a random friendly card +2/+2
+      if (playerCards.length > 0) {
+        const randomIndex = Math.floor(Math.random() * playerCards.length);
+        const targetCard = playerCards[randomIndex];
+        targetCard.dataset.atk = parseInt(targetCard.dataset.atk) + 2;
+        targetCard.dataset.def = parseInt(targetCard.dataset.def) + 2;
+        targetCard.children[2].textContent = targetCard.dataset.atk;
+        targetCard.children[3].textContent = targetCard.dataset.def;
+        targetCard.children[2].style.color = 'gold';
+        targetCard.children[3].style.color = 'gold';
+
+        gsap.to(targetCard, {
+          duration: 0.5,
+          scale: 1.1,
+          yoyo: true,
+          repeat: 1
+        });
+        notification(`Enchantress empowers ${targetCard.dataset.name}! +2/+2!`);
+      }
+    }
+  }
+};
+
+// Apply card ability when played
+function applyCardAbility(card) {
+  const cardName = card.dataset.name;
+  if (cardAbilities[cardName]) {
+    const ability = cardAbilities[cardName];
+
+    // Add ability indicator
+    const abilityIcon = document.createElement('div');
+    abilityIcon.classList.add('card-ability-icon');
+
+    if (ability.type === 'buff') {
+      abilityIcon.classList.add('ability-buff');
+      abilityIcon.textContent = '✨';
+    } else if (ability.type === 'debuff') {
+      abilityIcon.classList.add('ability-debuff');
+      abilityIcon.textContent = '💀';
+    } else if (ability.type === 'damage') {
+      abilityIcon.classList.add('ability-spell');
+      abilityIcon.textContent = '🔥';
+    } else {
+      abilityIcon.textContent = '⚡';
+    }
+
+    card.appendChild(abilityIcon);
+
+    // Trigger ability effect after a short delay
+    setTimeout(() => {
+      ability.effect(card);
+      createParticles(
+        window.innerWidth / 2,
+        window.innerHeight / 2,
+        20,
+        ability.type === 'damage' || ability.type === 'debuff' ? 'fire' : 'magic'
+      );
+    }, 1000);
+  }
+}
+
+// Enhanced Enemy Play Card with Abilities
+const originalEnemyPlayCard = enemyPlayCard;
+window.enemyPlayCard = function() {
+  const initialEnemyCardsCount = enemyCards.length;
+
+  originalEnemyPlayCard.call(this);
+
+  // Check if a new card was played and apply its ability
+  setTimeout(() => {
+    if (enemyCards.length > initialEnemyCardsCount) {
+      const newCard = enemyCards[enemyCards.length - 1];
+      applyCardAbility(newCard);
+    }
+  }, 500);
+};
+
+enemyPlayCard = window.enemyPlayCard;
+
+// Update playCard to include abilities
+const enhancedPlayCard = window.playCard;
+window.playCard = function(event) {
+  enhancedPlayCard.call(this, event);
+
+  // Find the card that was just played
+  setTimeout(() => {
+    if (playerCards.length > 0) {
+      const latestCard = playerCards[playerCards.length - 1];
+      applyCardAbility(latestCard);
+    }
+  }, 500);
+};
+
+playCard = window.playCard;
+
+// Add special enter animations for legendary cards
+function addLegendaryEntrance(card) {
+  const rarity = applyCardRarity(card);
+
+  if (rarity === 'legendary') {
+    gsap.from(card, {
+      duration: 1.5,
+      scale: 0,
+      rotation: 720,
+      ease: 'back.out(1.7)',
+      onStart: () => {
+        const rect = card.getBoundingClientRect();
+        createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 30, 'magic');
+      }
+    });
+    notification('A LEGENDARY card enters the battlefield!');
+  } else if (rarity === 'epic') {
+    gsap.from(card, {
+      duration: 1,
+      scale: 0.5,
+      rotation: 360,
+      ease: 'power2.out',
+      onStart: () => {
+        const rect = card.getBoundingClientRect();
+        createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 20, 'magic');
+      }
+    });
+  }
+}
+
 // BULMA CODE
 /* When a user clicks on a button, an element with the `.modal` class is opened. */
 document.addEventListener("DOMContentLoaded", () => {
