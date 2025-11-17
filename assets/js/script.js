@@ -1101,7 +1101,7 @@ function displayFelt() {
   loadingBar.remove();
   msg.remove();
   heroEl.style =
-    "background-image:url(./assets/images/red-felt.jpeg); cursor:url('./assets/images/custom-cursor.png'), auto;";
+    "background-image:url(./assets/images/new-bg.png); cursor:url('./assets/images/custom-cursor.png'), auto;";
   heroBody.style.width = "100%";
   heroBody.classList.add("p0");
   heroBody.style.flexDirection = "column";
