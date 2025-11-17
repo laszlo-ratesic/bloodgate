@@ -132,8 +132,8 @@ function hover(event) {
   event.target.style.boxShadow = $goldGlow;
 
   // 🎮 THREE.JS: Epic 3D hover effect
-  if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
-    bloodgateThree.cardHoverEffect(event.target, true);
+  if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree && window.bloodgateThree.scene) {
+    window.bloodgateThree.cardHoverEffect(event.target, true);
   }
 }
 
@@ -141,8 +141,8 @@ function unhover(event) {
   event.target.style.boxShadow = $blueGlow;
 
   // 🎮 THREE.JS: Reset hover effect
-  if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
-    bloodgateThree.cardHoverEffect(event.target, false);
+  if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree && window.bloodgateThree.scene) {
+    window.bloodgateThree.cardHoverEffect(event.target, false);
   }
 }
 
@@ -362,8 +362,8 @@ function attackTarget(event) {
   const target = event.currentTarget;
 
   // 🎮 THREE.JS: Epic attack projectile animation
-  if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
-    bloodgateThree.createAttackAnimation(readyToAttack, target, readyToAttack.dataset.atk);
+  if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree && window.bloodgateThree.scene) {
+    window.bloodgateThree.createAttackAnimation(readyToAttack, target, readyToAttack.dataset.atk);
   }
 
   // If the player attacks the enemy directly
@@ -1038,7 +1038,7 @@ function playCard(event) {
     createParticleBurst(chosenCard);
 
     // 🎮 THREE.JS: Epic 3D card play animation
-    if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
+    if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree && window.bloodgateThree.scene) {
       setTimeout(() => {
         const cardData = {
           name: chosenCard.dataset.name,
@@ -1046,7 +1046,7 @@ function playCard(event) {
                   chosenCard.classList.contains('epic') ? 'epic' :
                   chosenCard.classList.contains('rare') ? 'rare' : 'common'
         };
-        bloodgateThree.createCardPlayParticles(
+        window.bloodgateThree.createCardPlayParticles(
           new THREE.Vector3(0, 5, 2),
           cardData
         );
@@ -1110,9 +1110,17 @@ function displayFelt() {
   feltView.classList.remove("is-hidden");
 
   // Initialize Three.js 3D effects
-  if (typeof bloodgateThree !== 'undefined' && bloodgateThree) {
-    bloodgateThree.init();
-    console.log('🎮 3D effects activated!');
+  console.log('🔍 Checking for bloodgateThree...', typeof window.bloodgateThree);
+  if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree) {
+    console.log('✅ bloodgateThree found, calling init()...');
+    const initSuccess = window.bloodgateThree.init();
+    if (initSuccess) {
+      console.log('🎮 3D effects activated successfully!');
+    } else {
+      console.error('❌ Failed to initialize 3D effects');
+    }
+  } else {
+    console.error('❌ bloodgateThree not found - 3D effects will not be available');
   }
 
   turnCounter++;

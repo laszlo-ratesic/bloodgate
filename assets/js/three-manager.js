@@ -44,35 +44,49 @@ class BloodgateThreeManager {
    * Initialize the Three.js scene and renderer
    */
   init() {
+    console.log('🔍 Attempting to initialize Three.js...');
+    console.log('🔍 Looking for canvas with id "three-canvas"...');
+
     this.canvas = document.getElementById('three-canvas');
+
     if (!this.canvas) {
-      console.error('Three.js canvas not found!');
-      return;
+      console.error('❌ Three.js canvas not found!');
+      console.error('🔍 DOM ready state:', document.readyState);
+      console.error('🔍 Available elements:', document.querySelectorAll('canvas').length, 'canvas elements found');
+      return false;
     }
 
-    // Create scene
-    this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x0a0a0a, 0.0015);
+    console.log('✅ Canvas found!');
 
-    // Setup camera
-    this.setupCamera();
+    try {
+      // Create scene
+      this.scene = new THREE.Scene();
+      this.scene.fog = new THREE.FogExp2(0x0a0a0a, 0.0015);
 
-    // Setup renderer
-    this.setupRenderer();
+      // Setup camera
+      this.setupCamera();
 
-    // Setup lights
-    this.setupLights();
+      // Setup renderer
+      this.setupRenderer();
 
-    // Create ambient effects
-    this.createAmbientParticles();
+      // Setup lights
+      this.setupLights();
 
-    // Start animation loop
-    this.animate();
+      // Create ambient effects
+      this.createAmbientParticles();
 
-    // Handle window resize
-    window.addEventListener('resize', () => this.onWindowResize());
+      // Start animation loop
+      this.animate();
 
-    console.log('🎮 Bloodgate 3D Engine initialized!');
+      // Handle window resize
+      window.addEventListener('resize', () => this.onWindowResize());
+
+      console.log('🎮 Bloodgate 3D Engine initialized successfully!');
+      return true;
+    } catch (error) {
+      console.error('❌ Error initializing Three.js:', error);
+      return false;
+    }
   }
 
   /**
@@ -856,14 +870,16 @@ class BloodgateThreeManager {
   }
 }
 
-// Global instance
-let bloodgateThree = null;
+// Global instance - using window to ensure it's truly global
+window.bloodgateThree = null;
 
 // Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    bloodgateThree = new BloodgateThreeManager();
+    window.bloodgateThree = new BloodgateThreeManager();
+    console.log('✅ BloodgateThreeManager instance created');
   });
 } else {
-  bloodgateThree = new BloodgateThreeManager();
+  window.bloodgateThree = new BloodgateThreeManager();
+  console.log('✅ BloodgateThreeManager instance created');
 }
