@@ -1109,11 +1109,12 @@ function displayFelt() {
 
   feltView.classList.remove("is-hidden");
 
-  // Initialize Three.js 3D effects
+  // Initialize Three.js 3D effects - pass feltView container directly
   console.log('🔍 Checking for bloodgateThree...', typeof window.bloodgateThree);
   if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree) {
     console.log('✅ bloodgateThree found, calling init()...');
-    const initSuccess = window.bloodgateThree.init();
+    console.log('🔍 Passing feltView container:', feltView);
+    const initSuccess = window.bloodgateThree.init(feltView);
     if (initSuccess) {
       console.log('🎮 3D effects activated successfully!');
     } else {

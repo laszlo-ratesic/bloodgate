@@ -42,8 +42,9 @@ class BloodgateThreeManager {
 
   /**
    * Initialize the Three.js scene and renderer
+   * @param {HTMLElement} container - Optional container element (felt-view)
    */
-  init() {
+  init(container = null) {
     console.log('🔍 Attempting to initialize Three.js...');
     console.log('🔍 Looking for canvas with id "three-canvas"...');
 
@@ -57,13 +58,14 @@ class BloodgateThreeManager {
       this.canvas.id = 'three-canvas';
       this.canvas.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;';
 
-      // Find felt-view and prepend canvas as first child
-      const feltView = document.getElementById('felt-view');
+      // Use provided container or try to find felt-view
+      const feltView = container || document.getElementById('felt-view');
       if (feltView) {
         feltView.insertBefore(this.canvas, feltView.firstChild);
         console.log('✅ Canvas created and added to DOM!');
       } else {
         console.error('❌ Could not find felt-view container!');
+        console.error('❌ Please pass the container element to init(container)');
         return false;
       }
     } else {
