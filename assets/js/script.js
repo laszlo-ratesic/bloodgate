@@ -1107,8 +1107,13 @@ function displayFelt() {
   heroBody.style.flexDirection = "column";
   heroBody.style.justifyContent = "space-between";
 
-  // Re-append feltView to heroBody (it was removed when we cleared heroBody for the loading screen)
-  heroBody.appendChild(feltView);
+  // Remove loading screen
+  const loadingScreen = document.querySelector('.loading-screen');
+  if (loadingScreen) {
+    loadingScreen.remove();
+  }
+
+  // Show feltView (it was never removed from DOM, just hidden)
   feltView.classList.remove("is-hidden");
 
   // Initialize Three.js 3D effects - pass feltView container directly
@@ -1183,6 +1188,9 @@ function loadScreen() {
   navBarBrand.classList.add("is-hidden");
   navBarMenu.classList.add("is-hidden");
 
+  // Hide felt-view instead of removing it
+  feltView.classList.add('is-hidden');
+
   // Create cinematic loading screen
   const loadingScreen = document.createElement('div');
   loadingScreen.className = 'loading-screen';
@@ -1252,8 +1260,8 @@ function loadScreen() {
   loadingScreen.appendChild(progressContainer);
   loadingScreen.appendChild(tipsContainer);
 
-  heroBody.innerHTML = '';
-  heroBody.appendChild(loadingScreen);
+  // Prepend loading screen without clearing heroBody
+  heroBody.prepend(loadingScreen);
 
   // Animate progress bar
   let progress = 0;
