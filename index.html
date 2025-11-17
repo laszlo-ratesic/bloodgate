@@ -12,7 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/sass/combined.css" />
-    <title>Bloodgate</title>
+    <link rel="stylesheet" href="./assets/sass/epic-enhancements.css" />
+    <title>Bloodgate: The Wildwood Deception</title>
   </head>
   <body>
     <section class="hero is-dark is-fullheight">
@@ -88,14 +89,39 @@
       <div class="hero-body">
         <!-- HOME SCREEN -->
         <div id="landing-msg" class="container has-text-centered">
-          <p class="title is-size-1">
-            Bloodgate
-          </p>
-          <br>
-          <p class="subtitle is-size-2">The Wildwood Deception</p>
-          <button id="new-game-btn" class="button is-large is-success is-outlined js-modal-trigger" data-target="new-game-modal">
-            New Game
-          </button>
+          <div class="epic-title-wrapper">
+            <div class="particles-background" id="particles-bg"></div>
+            <h1 class="epic-title glitch-effect" data-text="BLOODGATE">
+              BLOODGATE
+            </h1>
+            <div class="epic-subtitle-wrapper">
+              <p class="epic-subtitle">The Wildwood Deception</p>
+              <div class="subtitle-underline"></div>
+            </div>
+            <p class="epic-tagline">Master the cards. Conquer the darkness. Reclaim the Wildwood.</p>
+          </div>
+          <div class="landing-buttons">
+            <button id="new-game-btn" class="button-epic button-primary js-modal-trigger" data-target="new-game-modal">
+              <span class="button-epic-inner">
+                <span class="button-epic-text">Begin Your Quest</span>
+                <span class="button-epic-icon">⚔️</span>
+              </span>
+            </button>
+            <div class="quick-stats">
+              <div class="stat-badge">
+                <span class="stat-icon">🎯</span>
+                <span class="stat-label">Strategic Combat</span>
+              </div>
+              <div class="stat-badge">
+                <span class="stat-icon">🃏</span>
+                <span class="stat-label">Epic Cards</span>
+              </div>
+              <div class="stat-badge">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-label">Dynamic Battles</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- FELT VIEW -->
