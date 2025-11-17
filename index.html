@@ -244,74 +244,90 @@
 
       <div class="modal-content">
         <div class="box">
-          <div class="title">Start a New Game</div>
+          <div class="title">⚔️ Forge Your Destiny ⚔️</div>
           <!-- Modal Content -->
-          <!-- NAME -->
           <form id="new-game-form">
+            <!-- NAME -->
             <div class="field">
-              <label class="label">Character Name</label>
+              <label class="label">🏆 Your Hero's Name 🏆</label>
               <div class="control">
-                <input id="name-input" type="text" class="input" placeholder="Kingslayer" required="required">
+                <input id="name-input" type="text" class="input" placeholder="Enter your champion's name..." required="required">
               </div>
             </div>
 
-            <!-- CLASS -->
+            <!-- CLASS SELECTION -->
             <div class="field">
-              <label for="class-select" class="label">Class</label>
-              <div class="control">
-                <div class="select">
-                  <select name="class-select" id="class-select" required="required">
-                    <option value="">--Please choose a class--</option>
-                    <option value="barbarian">Barbarian</option>
-                    <option value="mage">Mage</option>
-                    <option value="rogue">Rogue</option>
-                  </select>
+              <label class="label">⚔️ Choose Your Class ⚔️</label>
+              <input type="hidden" id="class-select" name="class-select" required>
+              <div class="class-selection">
+                <div class="class-card" data-class="barbarian">
+                  <div class="class-card-icon" style="color: #ff4500;">🪓</div>
+                  <div class="class-card-name">BARBARIAN</div>
+                  <div class="class-card-stats">
+                    💪 High Attack<br>
+                    🛡️ Medium Defense<br>
+                    ⚡ Rage Abilities
+                  </div>
+                </div>
+                <div class="class-card" data-class="mage">
+                  <div class="class-card-icon" style="color: #00bfff;">🔮</div>
+                  <div class="class-card-name">MAGE</div>
+                  <div class="class-card-stats">
+                    ✨ Spell Mastery<br>
+                    🎯 +2 Power Bonus<br>
+                    🌟 Arcane Magic
+                  </div>
+                </div>
+                <div class="class-card" data-class="rogue">
+                  <div class="class-card-icon" style="color: #9370db;">🗡️</div>
+                  <div class="class-card-name">ROGUE</div>
+                  <div class="class-card-stats">
+                    💨 Swift Strikes<br>
+                    🎭 Stealth Master<br>
+                    🔪 Critical Hits
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- DIFFICULTY -->
             <div class="field">
-              <div class="control">
-                <label id="difficulty-level" for="difficulty" class="label">Difficulty Level</label>
-                <label for="easy" class="radio">
+              <label class="label">💀 Choose Your Challenge 💀</label>
+              <div class="difficulty-options">
+                <label class="difficulty-option">
                   <input id="easy" value="easy" type="radio" name="difficulty" required="required">
-                  Easy
+                  <span class="difficulty-label">Easy <span class="difficulty-skulls">💀</span></span>
                 </label>
-                <label for="medium" class="radio">
+                <label class="difficulty-option">
                   <input id="medium" value="medium" type="radio" name="difficulty">
-                  Medium
+                  <span class="difficulty-label">Medium <span class="difficulty-skulls">💀💀</span></span>
                 </label>
-                <label for="hard" class="radio">
+                <label class="difficulty-option">
                   <input id="hard" value="hard" type="radio" name="difficulty">
-                  Hard
+                  <span class="difficulty-label">Hard <span class="difficulty-skulls">💀💀💀</span></span>
                 </label>
-                <label for="diabolical" class="radio">
+                <label class="difficulty-option">
                   <input id="diabolical" value="diabolical" type="radio" name="difficulty">
-                  Diabolical
+                  <span class="difficulty-label">Diabolical <span class="difficulty-skulls">💀💀💀💀</span></span>
                 </label>
               </div>
             </div>
 
             <!-- TRASHTALK -->
-            <div class="field">
-              <div class="control">
-                <label class="label">Profanity</label>
-                <label class="checkbox">
-                  <input id="profanity-input" type="checkbox">
-                  Enable <a target="_blank" href="https://twitter.com/foaas">Trash Talk</a>?
-                </label>
-              </div>
+            <div class="field" style="text-align: center; margin-top: 1.5rem;">
+              <label class="checkbox" style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem;">
+                <input id="profanity-input" type="checkbox" style="margin-right: 0.5rem;">
+                Enable Trash Talk Mode 🔥
+              </label>
             </div>
 
-            <footer class="modal-card-foot">
+            <footer class="modal-card-foot" style="background: transparent; border: none; justify-content: center; padding-top: 2rem;">
               <!-- SUBMIT/CANCEL -->
               <div class="field is-grouped">
                 <div class="control">
-                  <input id="submit-btn" type="submit" value="Submit" class="button is-success"></input>
-                </div>
-                <div class="control">
-                  <input type="reset" value="Cancel" class="button is-success is-light"></input>
+                  <button type="submit" class="button-epic">
+                    <span class="button-epic-text">Enter the Arena!</span>
+                  </button>
                 </div>
               </div>
             </footer>
@@ -330,75 +346,79 @@
       <div class="modal-background"></div>
       <div class="modal-content">
         <div class="box">
-          <div class="title">Create an Account</div>
+          <div class="title">⚔️ Create Your Legend ⚔️</div>
 
           <!-- Modal Content -->
           <form id="account-form">
           <!-- USERNAME -->
             <div class="field">
-              <label class="label">New Username</label>
+              <label class="label">✨ Choose Your Username ✨</label>
               <div class="control">
-                <input id="username-input" type="text" class="input" placeholder="TyrionLannister420" required="required">
+                <input id="username-input" type="text" class="input" placeholder="Enter your legendary name..." required="required">
               </div>
             </div>
 
-            <!-- CLASS -->
+            <!-- DECK SELECTION -->
             <div class="field">
-              <label for="deck-select" class="label">Choose a starter deck</label>
-              <div class="control">
-                <div class="select">
-                  <select name="deck-select" id="deck-select" required="required">
-                    <option value="">--Please choose a starting deck--</option>
-                    <option value="dragons-wrath">Dragon's wrath</option>
-                    <option value="bloodfury-dominion">Bloodfury Dominion</option>
-                    <option value="legion-of-the-forest">Legion of the Forest</option>
-                  </select>
+              <label class="label">🃏 Select Your Starter Deck 🃏</label>
+              <input type="hidden" id="deck-select" name="deck-select" required>
+              <div class="deck-selection-cards">
+                <div class="deck-card" data-deck="dragons-wrath">
+                  <div class="deck-card-icon">🐉</div>
+                  <div class="deck-card-name">Dragon's Wrath</div>
+                  <div class="deck-card-description">Unleash fire and fury upon your enemies</div>
+                </div>
+                <div class="deck-card" data-deck="bloodfury-dominion">
+                  <div class="deck-card-icon">⚔️</div>
+                  <div class="deck-card-name">Bloodfury Dominion</div>
+                  <div class="deck-card-description">Dominate through raw power and aggression</div>
+                </div>
+                <div class="deck-card" data-deck="legion-of-the-forest">
+                  <div class="deck-card-icon">🌲</div>
+                  <div class="deck-card-name">Legion of the Forest</div>
+                  <div class="deck-card-description">Command nature's ancient forces</div>
                 </div>
               </div>
             </div>
 
             <!-- EXPERIENCE -->
             <div class="field">
-              <div class="control">
-                <label id="experience-level" for="experience" class="label">Level of Experience</label>
-                <label for="novice" class="radio">
+              <label class="label">🎯 Your Experience Level 🎯</label>
+              <div class="difficulty-options" style="grid-template-columns: repeat(2, 1fr);">
+                <label class="difficulty-option">
                   <input id="novice" value="novice" type="radio" name="experience" required="required">
-                  I'm a total n00b
+                  <span class="difficulty-label">Novice 🌱</span>
                 </label>
-                <label for="beginner" class="radio">
+                <label class="difficulty-option">
                   <input id="beginner" value="beginner" type="radio" name="experience">
-                  I've played a trading card game once or twice
+                  <span class="difficulty-label">Beginner ⚡</span>
                 </label>
-                <label for="intermediate" class="radio">
+                <label class="difficulty-option">
                   <input id="intermediate" value="intermediate" type="radio" name="experience">
-                  I enjoy trading card games semi-regularly
+                  <span class="difficulty-label">Veteran 🎖️</span>
                 </label>
-                <label for="advanced" class="radio">
+                <label class="difficulty-option">
                   <input id="advanced" value="advanced" type="radio" name="experience">
-                  I'm a die-hard TCG fan
+                  <span class="difficulty-label">Master 👑</span>
                 </label>
               </div>
             </div>
 
             <!-- SUBSCRIBE -->
-            <div class="field">
-              <div class="control">
-                <label class="label">Acknowledgement</label>
-                <label class="checkbox">
-                  <input id="subscribe" type="checkbox">
-                  I hereby acknowledge that I will have a kickass time.
-                </label>
-              </div>
+            <div class="field" style="text-align: center; margin-top: 1.5rem;">
+              <label class="checkbox" style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem;">
+                <input id="subscribe" type="checkbox" style="margin-right: 0.5rem;">
+                I hereby acknowledge that I will have an EPIC time! 🎮
+              </label>
             </div>
 
-            <footer class="modal-card-foot">
+            <footer class="modal-card-foot" style="background: transparent; border: none; justify-content: center; padding-top: 2rem;">
               <!-- SUBMIT/CANCEL -->
               <div class="field is-grouped">
                 <div class="control">
-                  <button type="submit" value="Submit" class="button is-success">Huzzah!</button>
-                </div>
-                <div class="control">
-                  <input type="reset" value="Cancel" class="button is-success is-light"></input>
+                  <button type="submit" value="Submit" class="button-epic">
+                    <span class="button-epic-text">Begin Your Journey!</span>
+                  </button>
                 </div>
               </div>
             </footer>
