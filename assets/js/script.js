@@ -1415,6 +1415,7 @@ function startGame(event) {
     }
   }
 
+  getDeck(player, bloodgateUser.startingDeck);
   getDeck(enemy, "bloodfury-dominion");
 
   if (settings.difficulty === "easy") {
