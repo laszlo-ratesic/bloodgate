@@ -130,10 +130,20 @@ function buttonReleased(event) {
 
 function hover(event) {
   event.target.style.boxShadow = $goldGlow;
+
+  // 🎮 THREE.JS: Epic 3D hover effect
+  if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
+    bloodgateThree.cardHoverEffect(event.target, true);
+  }
 }
 
 function unhover(event) {
   event.target.style.boxShadow = $blueGlow;
+
+  // 🎮 THREE.JS: Reset hover effect
+  if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
+    bloodgateThree.cardHoverEffect(event.target, false);
+  }
 }
 
 function attackTargetHover(event) {
@@ -350,6 +360,12 @@ function attackTarget(event) {
     playerCards[i].removeEventListener("click", AtkMsg);
   }
   const target = event.currentTarget;
+
+  // 🎮 THREE.JS: Epic attack projectile animation
+  if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
+    bloodgateThree.createAttackAnimation(readyToAttack, target, readyToAttack.dataset.atk);
+  }
+
   // If the player attacks the enemy directly
   if (target.id === "enemy-avatar") {
     enemy.health -= readyToAttack.dataset.atk;
@@ -1020,6 +1036,22 @@ function playCard(event) {
 
     // Create particle burst effect
     createParticleBurst(chosenCard);
+
+    // 🎮 THREE.JS: Epic 3D card play animation
+    if (typeof bloodgateThree !== 'undefined' && bloodgateThree && bloodgateThree.scene) {
+      setTimeout(() => {
+        const cardData = {
+          name: chosenCard.dataset.name,
+          rarity: chosenCard.classList.contains('legendary') ? 'legendary' :
+                  chosenCard.classList.contains('epic') ? 'epic' :
+                  chosenCard.classList.contains('rare') ? 'rare' : 'common'
+        };
+        bloodgateThree.createCardPlayParticles(
+          new THREE.Vector3(0, 5, 2),
+          cardData
+        );
+      }, 100);
+    }
   }
 }
 
@@ -1076,6 +1108,12 @@ function displayFelt() {
   heroBody.style.justifyContent = "space-between";
 
   feltView.classList.remove("is-hidden");
+
+  // Initialize Three.js 3D effects
+  if (typeof bloodgateThree !== 'undefined' && bloodgateThree) {
+    bloodgateThree.init();
+    console.log('🎮 3D effects activated!');
+  }
 
   turnCounter++;
   player.power++;
