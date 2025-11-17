@@ -1116,7 +1116,7 @@ function startGame(event) {
   player.class = classSelect.value;
 
   // Save game settings to localStorage
-  const gameSettings = {
+  let gameSettings = {
     playerName: player.name,
     playerClass: player.class,
     difficulty: settings.difficulty,
@@ -1163,7 +1163,7 @@ function startGame(event) {
   settings.profanity = profanityInput.checked;
 
   // Save settings to localStorage
-  const gameSettings = {
+  gameSettings = {
     playerName: player.name,
     playerClass: player.class,
     difficulty: settings.difficulty,
