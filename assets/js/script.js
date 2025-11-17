@@ -1,7 +1,3 @@
-const pantryID = "e7259b55-e424-4352-b9d4-af473fc7431a";
-const apiurl =
-  "https://getpantry.cloud/apiv1/pantry/e7259b55-e424-4352-b9d4-af473fc7431a/basket/dragons-wrath";
-
 const accountEl = document.getElementById("account-el");
 const navBarBrand = document.querySelector(".navbar-brand");
 const navBarMenu = document.querySelector(".navbar-menu");
@@ -828,29 +824,20 @@ function enemyTurn() {
 }
 
 function compliment() {
-  const apiUrl = "https://complimentr.com/api";
-
-  fetch(apiUrl, {
-    method: "GET",
-  })
-    .then(function (response) {
-      if (response.ok) {
-        return response.json().then(function (data) {
-          trashTalk = data.compliment;
-        });
-      }
-    })
-    .catch(function (error) {
-      // Fallback compliments if API fails
-      const fallbackCompliments = [
-        "You're doing great!",
-        "Impressive strategy!",
-        "Your skills are improving!",
-        "Well played, champion!",
-        "Keep up the good work!"
-      ];
-      trashTalk = fallbackCompliments[Math.floor(Math.random() * fallbackCompliments.length)];
-    });
+  // Use local compliments (API has CORS issues)
+  const fallbackCompliments = [
+    "You're doing great!",
+    "Impressive strategy!",
+    "Your skills are improving!",
+    "Well played, champion!",
+    "Keep up the good work!",
+    "Outstanding move!",
+    "You're a natural!",
+    "Brilliant tactics!",
+    "Masterful play!",
+    "You're unstoppable!"
+  ];
+  trashTalk = fallbackCompliments[Math.floor(Math.random() * fallbackCompliments.length)];
 }
 
 function endPlayerTurn() {
@@ -1199,38 +1186,22 @@ function createAccount(event) {
 }
 
 function getDeck(user, deck) {
-  const apiUrl =
-    "https://getpantry.cloud/apiv1/pantry/e7259b55-e424-4352-b9d4-af473fc7431a/basket/" +
-    deck;
-
-  return fetch(apiUrl, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  })
-    .then(function (response) {
-      if (response.ok) {
-        return response.json().then(function (data) {
-          user.deck = data.cards;
-          return data.cards;
-        });
-      } else {
+  // Load deck from local JSON file (API has reliability issues)
+  return fetch(`./assets/json/${deck}.json`)
+    .then(res => {
+      if (!res.ok) {
         throw new Error(`Failed to load deck: ${deck}`);
       }
+      return res.json();
     })
-    .catch(function (error) {
-      // Fallback: Load deck from local JSON file if API fails
-      return fetch(`./assets/json/${deck}.json`)
-        .then(res => res.json())
-        .then(data => {
-          user.deck = data.cards;
-          return data.cards;
-        })
-        .catch(err => {
-          notification("Error loading deck. Please refresh the page.");
-          return [];
-        });
+    .then(data => {
+      user.deck = data.cards;
+      return data.cards;
+    })
+    .catch(err => {
+      console.error(`Error loading deck ${deck}:`, err);
+      notification("Error loading deck. Please refresh the page.");
+      return [];
     });
 }
 
