@@ -56,7 +56,7 @@ class BloodgateThreeManager {
       // Create canvas element
       this.canvas = document.createElement('canvas');
       this.canvas.id = 'three-canvas';
-      this.canvas.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;';
+      this.canvas.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;';
 
       // Use provided container or try to find felt-view
       const feltView = container || document.getElementById('felt-view');
@@ -92,8 +92,12 @@ class BloodgateThreeManager {
       // Start animation loop
       this.animate();
 
-      // Handle window resize
-      window.addEventListener('resize', () => this.onWindowResize());
+      // Handle window resize with debouncing
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => this.onWindowResize(), 150);
+      });
 
       console.log('🎮 Bloodgate 3D Engine initialized successfully!');
       return true;
@@ -772,9 +776,11 @@ class BloodgateThreeManager {
 
       system.geometry.attributes.position.needsUpdate = true;
 
-      // Remove dead particles
+      // Remove dead particles with proper disposal
       if (system.userData.life <= 0) {
         this.scene.remove(system);
+        system.geometry.dispose();
+        system.material.dispose();
         this.particleSystems.splice(i, 1);
       }
     }

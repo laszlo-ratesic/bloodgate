@@ -10,9 +10,9 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: screen;
-  opacity: 0.95;
+  z-index: 5; /* Raised to layer properly with game elements */
+  mix-blend-mode: normal; /* Changed from screen to prevent color artifacts */
+  opacity: 1; /* Full visibility for crisp particles */
 }
 
 #felt-view {

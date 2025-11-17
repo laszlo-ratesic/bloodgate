@@ -135,6 +135,11 @@ function hover(event) {
   if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree && window.bloodgateThree.scene) {
     window.bloodgateThree.cardHoverEffect(event.target, true);
   }
+
+  // 🎨 PREMIUM: Create hover sparkles
+  if (typeof window.premiumEffects !== 'undefined' && window.premiumEffects && window.premiumEffects.isInitialized) {
+    window.premiumEffects.createHoverSparkles(event.target);
+  }
 }
 
 function unhover(event) {
@@ -1055,6 +1060,51 @@ function playCard(event) {
   }
 }
 
+// 🎨 PREMIUM: Play card via drag and drop with AAA effects
+function playCardViaDragDrop(chosenCard) {
+  if (player.power >= chosenCard.dataset.cost) {
+    const index = player.hand.indexOf(chosenCard);
+    player.hand.splice(index, 1);
+    chosenCard.classList.remove("player-card");
+    chosenCard.classList.add("played-card");
+    chosenCard.setAttribute("data-state", "in-play");
+    if (player.class === "rogue") {
+      cardReady(chosenCard);
+      chosenCard.dataset.state = "on-guard";
+      chosenCard.addEventListener("click", AtkMsg);
+      chosenCard.addEventListener("mouseenter", hover);
+      chosenCard.addEventListener("mouseleave", unhover);
+    }
+    chosenCard.removeEventListener("click", playCard);
+
+    // 🎨 PREMIUM: Epic card play animation with anime.js
+    if (window.premiumEffects) {
+      window.premiumEffects.epicCardPlayAnimation(chosenCard, playerField);
+    }
+
+    playerField.appendChild(chosenCard);
+    player.power -= chosenCard.dataset.cost;
+    powerCounter.textContent = player.power;
+    playerPower.value = player.power * 100;
+
+    // 🎮 THREE.JS: Epic 3D card play animation
+    if (typeof window.bloodgateThree !== 'undefined' && window.bloodgateThree && window.bloodgateThree.scene) {
+      setTimeout(() => {
+        const cardData = {
+          name: chosenCard.dataset.name,
+          rarity: chosenCard.classList.contains('legendary') ? 'legendary' :
+                  chosenCard.classList.contains('epic') ? 'epic' :
+                  chosenCard.classList.contains('rare') ? 'rare' : 'common'
+        };
+        window.bloodgateThree.createCardPlayParticles(
+          new THREE.Vector3(0, 5, 2),
+          cardData
+        );
+      }, 100);
+    }
+  }
+}
+
 function drawCard(deck) {
   const randomIndex = Math.floor(Math.random() * deck.length);
   const drawnCard = deck[randomIndex];
@@ -1131,6 +1181,16 @@ function displayFelt() {
     console.error('❌ bloodgateThree not found - 3D effects will not be available');
   }
 
+  // 🎨 Initialize Premium Visual Effects Manager
+  console.log('🔍 Checking for premiumEffects...', typeof window.premiumEffects);
+  if (typeof window.premiumEffects !== 'undefined' && window.premiumEffects) {
+    console.log('✅ premiumEffects found, calling init()...');
+    window.premiumEffects.init();
+    console.log('🎨 Premium visual effects activated!');
+  } else {
+    console.error('❌ premiumEffects not found - premium effects will not be available');
+  }
+
   turnCounter++;
   player.power++;
   enemy.power++;
@@ -1146,6 +1206,13 @@ function displayFelt() {
   createStats(playerCard1);
   playerCard1.classList.add('card-hover-effect');
   player.hand.push(playerCard1);
+  // 🎨 Enable AAA drag-and-drop
+  if (window.premiumEffects) {
+    window.premiumEffects.enableCardDragDrop(playerCard1, {
+      dropZones: ['#player-field'],
+      onDrop: (card, zone) => playCardViaDragDrop(card)
+    });
+  }
 
   playerCard2.addEventListener("click", playCard);
   setCardProps(playerCard2, player.deck);
@@ -1153,6 +1220,13 @@ function displayFelt() {
   createStats(playerCard2);
   playerCard2.classList.add('card-hover-effect');
   player.hand.push(playerCard2);
+  // 🎨 Enable AAA drag-and-drop
+  if (window.premiumEffects) {
+    window.premiumEffects.enableCardDragDrop(playerCard2, {
+      dropZones: ['#player-field'],
+      onDrop: (card, zone) => playCardViaDragDrop(card)
+    });
+  }
 
   playerCard3.addEventListener("click", playCard);
   setCardProps(playerCard3, player.deck);
@@ -1160,6 +1234,13 @@ function displayFelt() {
   createStats(playerCard3);
   playerCard3.classList.add('card-hover-effect');
   player.hand.push(playerCard3);
+  // 🎨 Enable AAA drag-and-drop
+  if (window.premiumEffects) {
+    window.premiumEffects.enableCardDragDrop(playerCard3, {
+      dropZones: ['#player-field'],
+      onDrop: (card, zone) => playCardViaDragDrop(card)
+    });
+  }
 
   playerCard4.addEventListener("click", playCard);
   setCardProps(playerCard4, player.deck);
@@ -1167,6 +1248,13 @@ function displayFelt() {
   createStats(playerCard4);
   playerCard4.classList.add('card-hover-effect');
   player.hand.push(playerCard4);
+  // 🎨 Enable AAA drag-and-drop
+  if (window.premiumEffects) {
+    window.premiumEffects.enableCardDragDrop(playerCard4, {
+      dropZones: ['#player-field'],
+      onDrop: (card, zone) => playCardViaDragDrop(card)
+    });
+  }
 
   setCardProps(enemyCard1, enemy.deck);
   enemy.hand.push(enemyCard1);
