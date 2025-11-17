@@ -1107,6 +1107,8 @@ function displayFelt() {
   heroBody.style.flexDirection = "column";
   heroBody.style.justifyContent = "space-between";
 
+  // Re-append feltView to heroBody (it was removed when we cleared heroBody for the loading screen)
+  heroBody.appendChild(feltView);
   feltView.classList.remove("is-hidden");
 
   // Initialize Three.js 3D effects - pass feltView container directly
